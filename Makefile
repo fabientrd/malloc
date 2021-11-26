@@ -8,7 +8,7 @@ CFLAGS = -Wall -Wextra -Werror
 
 SRCS_PATH = src/
 
-SRCS_NAME = main.c \
+SRCS_NAME = malloc.c \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 
