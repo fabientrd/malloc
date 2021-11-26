@@ -1,8 +1,7 @@
 #include "../includes/malloc.h"
-#include <stdio.h>
 
-int main(){
-    printf("debut de malloc\n");
-    (void)malloc(0);
-    return (0);
+int	main(void){
+	printf("Nous entrons dans la fonction de test \n");
+	(void)malloc(0);
+	return (0);
 }

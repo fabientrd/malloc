@@ -1,46 +1,64 @@
-HOSTTYPE ?= $(shell uname -m)_$(shell uname -s)
+ifeq ($(HOSTTYPE),)
+	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+endif
+
+# **************************************************************************** #
+# FILES             														   #
+# **************************************************************************** #
+
+PATH_INC = inc
+PATH_LIB = lib
+PATH_OBJ = obj
+PATH_SRC = src
+
+# SOURCES += shared/block_merge.c shared/block_setup.c shared/heap.c \
+# 	shared/helper.c shared/shared.c shared/fill.c shared/getenv.c \
+# 	shared/block_get.c shared/block_remove.c shared/heap_get.c shared/ptr.c
+# SOURCES += log/show_alloc_mem_ex.c log/show_alloc_mem.c log/show_heap.c \
+# 	log/call.c
+# SOURCES += libc/ft_itoa_base.c libc/ft_bzero.c libc/ft_putstr.c \
+# 	libc/ft_memcpy.c libc/ft_memmove.c libc/ft_memset.c libc/ft_putstr_fd.c \
+# 	libc/ft_putchar_fd.c
+SOURCES +=  free.c malloc.c realloc.c
+
+OBJECTS = $(SOURCES:%.c=$(PATH_OBJ)/%.o)
+
+# **************************************************************************** #
+# VARIABLES         														   #
+# **************************************************************************** #
 
 NAME = libft_malloc_$(HOSTTYPE).so
+LIB_NAME = libft_malloc.so
 
 CC = gcc
 
-CFLAGS = -Wall -Wextra -Werror
+FLAGS_CC = -Wall -Wextra -Werror -fPIC
+FLAGS_LIB = -shared
 
-SRCS_PATH = src/
+# **************************************************************************** #
+# COMMANDS  		    													   #
+# **************************************************************************** #
 
-SRCS_NAME = malloc.c \
+.PHONY: all clean fclean re
 
-SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
+all: $(NAME)
 
-OBJS_PATH = obj/
+$(NAME): $(OBJECTS)
+	$(CC) $(FLAGS_LIB) -o $@ $(OBJECTS)
+	@rm -f $(LIB_NAME)
+	ln -s $(NAME) $(LIB_NAME)
+	@echo "Make done"
 
-OBJS_NAME = $(SRCS_NAME:.c=.o)
-
-OBJS = $(addprefix $(OBJS_PATH), $(OBJS_NAME))
-
-all: odir $(NAME)
-
-$(NAME): $(OBJS)
-	@echo " - Making $(NAME)"
-	@$(CC) -shared $(CFLAGS) -o $(NAME) $^ $(LIBRARY)
-	@ln -sf $(NAME) libft_malloc.so
-
-odir:
-	@mkdir -p $(OBJS_PATH)
-
-$(OBJS_PATH)%.o: $(SRCS_PATH)%.c
-	@echo " - Compiling $<"
-	@$(CC) $(CFLAGS) -fPIC -o $@ -c $<
+$(PATH_OBJ)/%.o: $(PATH_SRC)/%.c
+	@mkdir -p $(@D)
+	$(CC) -c -o $@ $(FLAGS_CC) $^ -O0 -g -I $(PATH_INC)
 
 clean:
-	@echo " - Cleaning objs"
-	@rm -f $(OBJS)
+	@rm -rf $(PATH_OBJ)
+	@echo "Clean done"
 
 fclean: clean
-	@echo " - Cleaning executable"
-	@rm -f $(NAME)
-	@rm -f libft_malloc.so
+	@rm -f $(NAME) $(LIB_NAME)
+	@echo "Fclean done"
 
-re: fclean all
-
-.PHONY: clean fclean re odir
+re: fclean $(NAME)
