@@ -6,8 +6,7 @@ endif
 # FILES             														   #
 # **************************************************************************** #
 
-PATH_INC = inc
-PATH_LIB = lib
+PATH_INC = includes
 PATH_OBJ = obj
 PATH_SRC = src
 
